@@ -51,3 +51,22 @@ const handleQuestion = () => {
 };
 
 handleGame();
+
+const handleOptionClick = (event) => {
+  const selectedOption = event.target;
+  const selectedAnswer = selectedOption.dataset['option'];
+  const isCorrect = selectedAnswer == currentQuestion.answer;
+
+  selectedOption.parentElement.style.backgroundColor = isCorrect
+    ? 'green'
+    : 'red';
+
+  setTimeout(() => {
+    selectedOption.parentElement.style.backgroundColor = 'white';
+    handleQuestion();
+  }, 1000);
+};
+
+options.forEach((option) => {
+  option.addEventListener('click', handleOptionClick);
+});

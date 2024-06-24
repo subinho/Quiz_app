@@ -4,32 +4,42 @@ const options = Array.from(document.getElementsByClassName('option'));
 let availableQuestions;
 let counter = 0;
 
-const questions = [
-  {
-    question: 'daad',
-    option1: '321',
-    option2: '322',
-    option3: '323',
-    option4: '324',
-    answer: '1',
-  },
-  {
-    question: 'ggf',
-    option1: '321',
-    option2: '322',
-    option3: '323',
-    option4: '324',
-    answer: '1',
-  },
-  {
-    question: 'aqqq',
-    option1: '321',
-    option2: '322',
-    option3: '323',
-    option4: '324',
-    answer: '1',
-  },
-];
+let questions = [];
+
+fetch('https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple')
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('No response!');
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data.results);
+    questions = data.results.map((question) => {
+      const formattedQuestion = {
+        question: question.question,
+      };
+
+      const answerOptions = [...question.incorrect_answers];
+      const getRandomIndex = Math.floor(Math.random() * 3) + 1;
+      formattedQuestion.answer = getRandomIndex;
+      answerOptions.splice(
+        formattedQuestion.answer - 1,
+        0,
+        question.correct_answer
+      );
+
+      answerOptions.forEach((option, index) => {
+        formattedQuestion[`option${index + 1}`] = option;
+      });
+      return formattedQuestion;
+    });
+
+    handleGame();
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
 const handleGame = () => {
   availableQuestions = [...questions];
@@ -37,6 +47,9 @@ const handleGame = () => {
 };
 
 const handleQuestion = () => {
+  if (availableQuestions.length === 0) {
+    return window.location.assign('/end.html');
+  }
   counter++;
   const index = Math.floor(Math.random() * availableQuestions.length);
   currentQuestion = availableQuestions[index];
@@ -49,8 +62,6 @@ const handleQuestion = () => {
 
   availableQuestions.splice(index, 1);
 };
-
-handleGame();
 
 const handleOptionClick = (event) => {
   const selectedOption = event.target;

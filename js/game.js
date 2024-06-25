@@ -56,7 +56,7 @@ const handleGame = () => {
 
 const handleQuestion = () => {
   if (availableQuestions.length === 0) {
-    return window.location.assign('/src/end.html');
+    return window.location.assign('end.html');
   }
   counter++;
   progress.innerHTML = `${counter} / ${questions.length}`;

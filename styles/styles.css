@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 :root {
   font-size: 62.5%;
 }
@@ -10,4 +12,17 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.bg-red-500 {
+  background-color: red;
+}
+
+.bg-green-500 {
+  background-color: green;
+}
+
+.text-white {
+  color: white;
 }

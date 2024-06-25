@@ -1,8 +1,12 @@
-const question = document.querySelector('#question');
+const question = document.getElementById('question');
 const options = Array.from(document.getElementsByClassName('option'));
+const loader = document.querySelector('#loader');
+const game = document.querySelector('#game');
+const progress = document.getElementById('progress');
 
 let availableQuestions;
-let counter = 0;
+let counter = 1;
+let score = 0;
 
 let questions = [];
 
@@ -43,14 +47,19 @@ fetch('https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple')
 
 const handleGame = () => {
   availableQuestions = [...questions];
+  localStorage.setItem('quizAppScore', score);
+  counter = 1;
   handleQuestion();
+  game.classList.remove('hidden');
+  loader.classList.add('hidden');
 };
 
 const handleQuestion = () => {
   if (availableQuestions.length === 0) {
-    return window.location.assign('/end.html');
+    return window.location.assign('/src/end.html');
   }
   counter++;
+  progress.innerHTML = `${counter} / ${questions.length}`;
   const index = Math.floor(Math.random() * availableQuestions.length);
   currentQuestion = availableQuestions[index];
   question.innerHTML = currentQuestion.question;
@@ -68,12 +77,18 @@ const handleOptionClick = (event) => {
   const selectedAnswer = selectedOption.dataset['option'];
   const isCorrect = selectedAnswer == currentQuestion.answer;
 
-  selectedOption.parentElement.style.backgroundColor = isCorrect
-    ? 'green'
-    : 'red';
+  if (isCorrect) {
+    score++;
+    localStorage.setItem('quizAppScore', score);
+  }
+
+  selectedOption.classList.add(
+    isCorrect ? 'bg-green-500' : 'bg-red-500',
+    'text-white'
+  );
 
   setTimeout(() => {
-    selectedOption.parentElement.style.backgroundColor = 'white';
+    selectedOption.classList.remove('bg-green-500', 'bg-red-500', 'text-white');
     handleQuestion();
   }, 1000);
 };
